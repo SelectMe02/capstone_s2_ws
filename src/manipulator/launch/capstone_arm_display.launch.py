@@ -4,6 +4,7 @@ from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
@@ -66,21 +67,20 @@ def generate_launch_description():
     )
 
     # Joint State Publisher (GUI or non-GUI)
-    # GUI가 켜져 있으면 joint_state_publisher_gui, 아니면 joint_state_publisher
     jsp_gui_node = Node(
+        condition=IfCondition(gui),
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         name='joint_state_publisher_gui',
         output='screen',
-        condition=None  # 조건은 아래에서 런치 분기 대신 gui arg로 사용자 선택하도록 함
     )
 
     jsp_node = Node(
+        condition=UnlessCondition(gui),
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
         output='screen',
-        condition=None
     )
 
     # RViz2
@@ -92,16 +92,13 @@ def generate_launch_description():
         arguments=['-d', rviz_config]
     )
 
-    # NOTE:
-    # Launch 조건 분기를 쓰지 않고 단순하게 항상 GUI를 쓰는 방식이 가장 덜 꼬임.
-    # gui:=false를 진짜로 쓰고 싶으면 Launch 조건(if/unless)을 추가해줄게.
-    # 여기서는 너가 바로 쓰기 좋게 GUI 기본을 켜서 제공.
     return LaunchDescription([
         declare_use_sim_time,
         declare_model,
         declare_rviz,
         declare_gui,
         rsp_node,
+        jsp_node,
         jsp_gui_node,
         rviz_node,
     ])

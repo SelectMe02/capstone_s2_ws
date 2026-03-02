@@ -19,9 +19,9 @@ def generate_launch_description():
     # Robot description
     robot_description_config = xacro.process_file(
         os.path.join(
-            get_package_share_directory('manipulator'),
-            'description',
-            'capstone_manipulator.urdf.xacro',
+            get_package_share_directory('manipulator_moveit'),
+            'config',
+            'manipulator.urdf.xacro',
         )
     )
     robot_description = {'robot_description': robot_description_config.toxml()}
