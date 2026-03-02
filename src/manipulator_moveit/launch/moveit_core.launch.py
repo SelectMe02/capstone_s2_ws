@@ -17,23 +17,11 @@ def generate_launch_description():
         'launch'
     )
 
-    # RViz config file path
-    rviz_config_file = os.path.join(
-        get_package_share_directory('manipulator_moveit'),
-        'rviz',
-        'moveit.rviz'
+    # RViz
+    rviz_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([launch_dir, '/moveit_rviz.launch.py'])
     )
-
-    # RViz node
-    rviz_node = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='screen',
-        arguments=['-d', rviz_config_file],
-    )
-
-    ld.add_action(rviz_node)
+    ld.add_action(rviz_launch)
 
     # move_group launch include
     move_group_launch = IncludeLaunchDescription(
