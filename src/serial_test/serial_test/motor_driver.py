@@ -6,10 +6,10 @@ class MotorDriver:
     def __init__(self):
         self.ser = serial.Serial('/dev/ttyUSB_RS485', 115200, timeout=0.5)
         self.RMID = 183
-        self.TMID = 172
+        self.TMID = 184
         self.driverID = 1
 
-        self.encoder_gain = 250  # encoder change value over 360 degree
+        self.encoder_gain = 60  # encoder change value over 360 degree
         self.rpm1, self.rpm2 = 0, 0
         self.current1, self.current2 = 0., 0.
         self.status1, self.status2 = 0, 0
