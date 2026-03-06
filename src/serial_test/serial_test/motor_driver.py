@@ -6,7 +6,7 @@ class MotorDriver:
     def __init__(self):
         self.ser = serial.Serial('/dev/ttyUSB_RS485', 115200, timeout=0.5)
         self.RMID = 183
-        self.TMID = 184
+        self.TMID = 174
         self.driverID = 1
 
         self.encoder_gain = 60  # encoder change value over 360 degree
@@ -144,7 +144,7 @@ class MotorDriver:
     def send_position_cmd(self, p1, p2, mv1, mv2):
         pid = 206
         datanum = 15
-        p1_ = np.array(Helper.int32_to_uint8arr(np.array(p1, dtype=np.int32)), dtype=np.uint8)
+        p1_ = np.array(Helper.int32_to_uint8arr(np.array(-p1, dtype=np.int32)), dtype=np.uint8)
         mv1_ = np.array(Helper.int16_to_uint8arr(np.array(mv1, dtype=np.int16)), dtype=np.uint8)
         p2_ = np.array(Helper.int32_to_uint8arr(np.array(p2, dtype=np.int32)), dtype=np.uint8)
         mv2_ = np.array(Helper.int16_to_uint8arr(np.array(mv2, dtype=np.int16)), dtype=np.uint8)
@@ -167,7 +167,7 @@ class MotorDriver:
     def send_vel_cmd(self, v1, v2):
         pid = 207
         datanum = 7
-        v1_ = np.array(Helper.int16_to_uint8arr(np.array(v1, dtype=np.int16)), dtype=np.uint8)
+        v1_ = np.array(Helper.int16_to_uint8arr(np.array(-v1, dtype=np.int16)), dtype=np.uint8)
         v2_ = np.array(Helper.int16_to_uint8arr(np.array(v2, dtype=np.int16)), dtype=np.uint8)
         data = np.array(1, dtype=np.uint8)
         data = np.append(data, v1_)
