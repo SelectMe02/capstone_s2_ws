@@ -346,9 +346,9 @@ class Nodelet(Node):
         self.msg_wheelmotor.current2 = int(self.md.current2)
         # self.msg_wheelmotor.target1 = int(self.vel_input1)
         # self.msg_wheelmotor.target2 = int(self.vel_input2)
-        # Match wheelmotor linear axis with real vehicle forward direction.
-        self.msg_wheelmotor.v_x = -(self.md.rpm1+self.md.rpm2)*np.pi*self.wheel_diameter/(60*2*4.33)
-        self.msg_wheelmotor.w_z = (self.md.rpm2-self.md.rpm1)*np.pi*self.wheel_diameter/(60*self.wheel_separation*4.33)
+        # Encoder/motor2 axis is opposite to robot-forward convention, so invert motor2 once.
+        self.msg_wheelmotor.v_x = (self.md.rpm1 - self.md.rpm2)*np.pi*self.wheel_diameter/(60*2*4.33)
+        self.msg_wheelmotor.w_z = -(self.md.rpm1 + self.md.rpm2)*np.pi*self.wheel_diameter/(60*self.wheel_separation*4.33)
         
         self.pub.publish(self.msg_wheelmotor)
 
@@ -369,7 +369,7 @@ class Nodelet(Node):
 
         # Calculate wheel displacements
         left_wheel_disp = (delta_pos1 /self.md.encoder_gain) * (np.pi * self.wheel_diameter)
-        right_wheel_disp = (delta_pos2 /self.md.encoder_gain) * (np.pi * self.wheel_diameter)
+        right_wheel_disp = -(delta_pos2 /self.md.encoder_gain) * (np.pi * self.wheel_diameter)
 
         # Calculate time difference
         current_time = self.get_clock().now()
@@ -377,7 +377,7 @@ class Nodelet(Node):
         self.last_time = current_time
 
         # Calculate linear and angular velocities
-        linear_velocity = -(left_wheel_disp + right_wheel_disp) / (2.0 * dt)
+        linear_velocity = (left_wheel_disp + right_wheel_disp) / (2.0 * dt)
         angular_velocity = (right_wheel_disp - left_wheel_disp) / (self.wheel_separation * dt)
 
 
