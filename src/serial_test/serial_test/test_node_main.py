@@ -347,8 +347,7 @@ class Nodelet(Node):
         # self.msg_wheelmotor.target1 = int(self.vel_input1)
         # self.msg_wheelmotor.target2 = int(self.vel_input2)
         self.msg_wheelmotor.v_x = (self.md.rpm1+self.md.rpm2)*np.pi*self.wheel_diameter/(60*2*4.33)
-        # Match odom yaw convention to hardware rotation direction.
-        self.msg_wheelmotor.w_z = (self.md.rpm1-self.md.rpm2)*np.pi*self.wheel_diameter/(60*self.wheel_separation*4.33)
+        self.msg_wheelmotor.w_z = (self.md.rpm2-self.md.rpm1)*np.pi*self.wheel_diameter/(60*self.wheel_separation*4.33)
         
         self.pub.publish(self.msg_wheelmotor)
 
@@ -378,7 +377,7 @@ class Nodelet(Node):
 
         # Calculate linear and angular velocities
         linear_velocity =  (left_wheel_disp + right_wheel_disp) / (2.0 * dt)
-        angular_velocity = (left_wheel_disp - right_wheel_disp) / (self.wheel_separation * dt)
+        angular_velocity = (right_wheel_disp - left_wheel_disp) / (self.wheel_separation * dt)
 
 
         
@@ -905,3 +904,4 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
