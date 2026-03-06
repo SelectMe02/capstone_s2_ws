@@ -183,10 +183,10 @@ class Nodelet(Node):
             return
 
         if self.JOY_CONTROL:
-            self.vel_input1 =  self.v_gain*self.joy_fb
-            self.vel_input1 -= self.w_gain*self.joy_lr
-            self.vel_input2 =  self.v_gain*self.joy_fb
-            self.vel_input2 += self.w_gain*self.joy_lr
+            # Motor1 command is sign-inverted in MotorDriver.send_vel_cmd().
+            # Mix joystick axes with that convention so forward/turn map correctly.
+            self.vel_input1 = -self.v_gain * self.joy_fb - self.w_gain * self.joy_lr
+            self.vel_input2 =  self.v_gain * self.joy_fb - self.w_gain * self.joy_lr
 
             self.vel_input1 = self.Lowpass_filter(self.vel_input1, self.vel_input1_old ,0.1)
             self.vel_input2 = self.Lowpass_filter(self.vel_input2, self.vel_input2_old ,0.1)
@@ -904,4 +904,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
