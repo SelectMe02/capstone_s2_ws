@@ -153,10 +153,10 @@ class Nodelet(Node):
             self.vel_input2_old = self.vel_input2
 
             if self.joy_stop == 1:
-                self.md.send_position_cmd(self.md.pos1, self.md.pos2, int(60), int(60))
+                self.md.send_position_cmd(-self.md.pos1, self.md.pos2, int(60), int(60))
                 self.get_logger().info('stop')
             else:
-                self.md.send_vel_cmd(self.vel_input1, self.vel_input2)
+                self.md.send_vel_cmd(-self.vel_input1, self.vel_input2)
 
             self.msg_wheelmotor.target1 = int(self.vel_input1)
             self.msg_wheelmotor.target2 = int(self.vel_input2)
@@ -210,7 +210,7 @@ class Nodelet(Node):
 
             self.marker_detected = False
 
-            self.md.send_position_cmd(int(self.target_pos1), int(self.target_pos2), int(60), int(60))
+            self.md.send_position_cmd(int(-self.target_pos1), int(self.target_pos2), int(60), int(60))
 
             self.msg_wheelmotor.target1 = int(self.target_pos1)
             self.msg_wheelmotor.target2 = int(self.target_pos2)
