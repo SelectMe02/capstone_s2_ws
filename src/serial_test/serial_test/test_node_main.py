@@ -103,9 +103,6 @@ class Nodelet(Node):
         self.vel_input2 = 0.0
         self.vel_input1_old = 0.0
         self.vel_input2_old = 0.0
-        # Hardware direction compensation (motor driver applies extra sign on ch1).
-        self.left_cmd_sign = -1.0
-        self.right_cmd_sign = -1.0
 
         # lowpass filter
         self.v_motor_last = 0.0
@@ -131,10 +128,7 @@ class Nodelet(Node):
         self.loopcnt += 1
 
         if self.firstloop:
-            self.md.send_vel_cmd(
-                self.left_cmd_sign * self.velocity1,
-                self.right_cmd_sign * self.velocity2,
-            )
+            self.md.send_vel_cmd(self.velocity1, self.velocity2)
             self.md.recv_motor_state()
             self.target_pos1 = self.md.pos1
             self.target_pos2 = self.md.pos2
@@ -162,10 +156,7 @@ class Nodelet(Node):
                 self.md.send_position_cmd(self.md.pos1, self.md.pos2, int(60), int(60))
                 self.get_logger().info('stop')
             else:
-                self.md.send_vel_cmd(
-                    self.left_cmd_sign * self.vel_input1,
-                    self.right_cmd_sign * self.vel_input2,
-                )
+                self.md.send_vel_cmd(self.vel_input1, self.vel_input2)
 
             self.msg_wheelmotor.target1 = int(self.vel_input1)
             self.msg_wheelmotor.target2 = int(self.vel_input2)
@@ -219,12 +210,7 @@ class Nodelet(Node):
 
             self.marker_detected = False
 
-            self.md.send_position_cmd(
-                int(self.left_cmd_sign * self.target_pos1),
-                int(self.right_cmd_sign * self.target_pos2),
-                int(60),
-                int(60),
-            )
+            self.md.send_position_cmd(int(self.target_pos1), int(self.target_pos2), int(60), int(60))
 
             self.msg_wheelmotor.target1 = int(self.target_pos1)
             self.msg_wheelmotor.target2 = int(self.target_pos2)
@@ -377,7 +363,7 @@ class Nodelet(Node):
             velocity_right = (linear_velocity + (self.wheel_separation / 2.0) * angular_velocity)
             velocity_left = (linear_velocity - (self.wheel_separation / 2.0) * angular_velocity)
 
-            encoder_delta_right = (velocity_right * control_dt * self.md.encoder_gain) / (np.pi * self.wheel_diameter)
+            encoder_delta_right = -(velocity_right * control_dt * self.md.encoder_gain) / (np.pi * self.wheel_diameter)
             encoder_delta_left = (velocity_left * control_dt * self.md.encoder_gain) / (np.pi * self.wheel_diameter)
 
             self.target_pos1 += encoder_delta_left
