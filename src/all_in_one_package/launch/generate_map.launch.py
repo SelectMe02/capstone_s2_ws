@@ -4,6 +4,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 import os
 from ament_index_python.packages import get_package_share_directory
+# ros2 run nav2_map_server map_saver_cli -f ~/capstone_s2_ws/src/amr/map testmap
 
 def generate_launch_description():
     return LaunchDescription([
