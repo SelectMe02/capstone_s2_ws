@@ -30,7 +30,7 @@ class Nodelet(Node):
     def __init__(self):
         super().__init__('serial_test')
         self.pub = self.create_publisher(WheelMotor, '/wheelmotor', 10)
-        self.odom_pub = self.create_publisher(Odometry, 'odom', 10)
+        self.odom_pub = self.create_publisher(Odometry, '/wheel/odometry', 10)
         self.sub_joy = self.create_subscription(Joy, '/joy', self.joy_callback, 100)
         self.sub_cmd_vel = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 100)
         self.stm_pub = self.create_publisher(String, '/stm_command', 10)
@@ -44,7 +44,8 @@ class Nodelet(Node):
 
         self.dt = 0.02
         self.timer_ = self.create_timer(self.dt, self.timer_callback)
-        self.tf_broadcaster = TransformBroadcaster(self)
+        self.publish_odom_tf = False
+        self.tf_broadcaster = TransformBroadcaster(self) if self.publish_odom_tf else None
 
         ####6/19 global coordinate####
         self.tf_buffer = Buffer()
@@ -411,15 +412,36 @@ class Nodelet(Node):
         odom_msg.child_frame_id = 'base_link'
         odom_msg.pose.pose.position.x = self.pose_x
         odom_msg.pose.pose.position.y = self.pose_y
-
+        odom_msg.pose.pose.position.z = 0.0
 
         q = quaternion_from_euler(0, 0, self.pose_theta)
         odom_msg.pose.pose.orientation.x = q[0]
         odom_msg.pose.pose.orientation.y = q[1]
         odom_msg.pose.pose.orientation.z = q[2]
         odom_msg.pose.pose.orientation.w = q[3]
-        odom_msg.twist.twist.linear.x = linear_velocity      #기존코드
+
+        odom_msg.twist.twist.linear.x = linear_velocity
+        odom_msg.twist.twist.linear.y = 0.0
         odom_msg.twist.twist.angular.z = angular_velocity
+
+        # robot_localization이 사용할 raw wheel odom covariance
+        odom_msg.pose.covariance = [
+            0.05, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.05, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 99999.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 99999.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 99999.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.20
+        ]
+
+        odom_msg.twist.covariance = [
+            0.02, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.02, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 99999.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 99999.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 99999.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.05
+        ]
         
         ###################lowpass filter#######################3
         # v_motor = (self.md.rpm1 + self.md.rpm2)/2.0
@@ -442,18 +464,19 @@ class Nodelet(Node):
         self.odom_pub.publish(odom_msg)
 
         # Publish transform over 
-        transform = TransformStamped()
-        transform.header.stamp = current_time.to_msg()
-        transform.header.frame_id = 'odom'
-        transform.child_frame_id = 'base_link'
-        transform.transform.translation.x = self.pose_x
-        transform.transform.translation.y = self.pose_y
-        transform.transform.translation.z = 0.
-        transform.transform.rotation.x = q[0]
-        transform.transform.rotation.y = q[1]
-        transform.transform.rotation.z = q[2]
-        transform.transform.rotation.w = q[3]
-        self.tf_broadcaster.sendTransform(transform)
+        if self.tf_broadcaster is not None:
+            transform = TransformStamped()
+            transform.header.stamp = current_time.to_msg()
+            transform.header.frame_id = 'odom'
+            transform.child_frame_id = 'base_link'
+            transform.transform.translation.x = self.pose_x
+            transform.transform.translation.y = self.pose_y
+            transform.transform.translation.z = 0.0
+            transform.transform.rotation.x = q[0]
+            transform.transform.rotation.y = q[1]
+            transform.transform.rotation.z = q[2]
+            transform.transform.rotation.w = q[3]
+            self.tf_broadcaster.sendTransform(transform)
 
         # # Publish lidar transform over TF
         # lidar_transform = TransformStamped()

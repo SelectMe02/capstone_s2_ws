@@ -1,53 +1,38 @@
+import os
+
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node
-import os
-from ament_index_python.packages import get_package_share_directory
-# ros2 run nav2_map_server map_saver_cli -f ~/capstone_s2_ws/src/amr_navigator/map testmap
+
 
 def generate_launch_description():
+    serial_launch = os.path.join(get_package_share_directory('serial_test'), 'serial_test.launch.py')
+    imu_ekf_launch = os.path.join(get_package_share_directory('ebimu_pkg'), 'launch', 'ebimu_ekf.launch.py')
+    lidar_launch = os.path.join(get_package_share_directory('sllidar_ros2'), 'launch', 'sllidar_c1_2_launch.py')
+    merger_launch = os.path.join(get_package_share_directory('ros2_laser_scan_merger'), 'launch', 'merge_2_scan.launch.py')
+    cartographer_launch = os.path.join(get_package_share_directory('amr_cartographer'), 'launch', 'amr_cartographer.launch.py')
+
     return LaunchDescription([
-        # First Launch: serial_test
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([os.path.join(
-                get_package_share_directory('serial_test')),
-                '/serial_test.launch.py'])
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(serial_launch)),
+
+        TimerAction(
+            period=1.0,
+            actions=[IncludeLaunchDescription(PythonLaunchDescriptionSource(imu_ekf_launch))],
         ),
 
-        # Second Launch: sllidar_ros2 after 5 seconds
         TimerAction(
             period=2.0,
-            actions=[
-                IncludeLaunchDescription(
-                    PythonLaunchDescriptionSource([os.path.join(
-                        get_package_share_directory('sllidar_ros2'), 'launch'),
-                        '/sllidar_c1_2_launch.py'])
-                ),
-            ]
+            actions=[IncludeLaunchDescription(PythonLaunchDescriptionSource(lidar_launch))],
         ),
 
-        # Third Launch: ros2_laser_scan_merger after 10 seconds
         TimerAction(
             period=4.0,
-            actions=[
-                IncludeLaunchDescription(
-                    PythonLaunchDescriptionSource([os.path.join(
-                        get_package_share_directory('ros2_laser_scan_merger'), 'launch'),
-                        '/merge_2_scan.launch.py'])
-                ),
-            ]
+            actions=[IncludeLaunchDescription(PythonLaunchDescriptionSource(merger_launch))],
         ),
 
-        # Fourth Launch: amr localization_launch after 15 seconds
         TimerAction(
             period=6.0,
-            actions=[
-                IncludeLaunchDescription(
-                    PythonLaunchDescriptionSource([os.path.join(
-                        get_package_share_directory('amr_cartographer'), 'launch'),
-                        '/amr_cartographer.launch.py'])
-                ),
-            ]
+            actions=[IncludeLaunchDescription(PythonLaunchDescriptionSource(cartographer_launch))],
         ),
     ])

@@ -66,6 +66,16 @@
       </visual>
     </link>
 
+    <link name="imu_link">
+      <visual name="imu_visual">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.04 0.03 0.01"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+    </link>
+
 
     <!-- Left Wheel Link -->
     <link name="wheel_left_link">
@@ -107,6 +117,25 @@
       <parent link="base_link"/>
       <child link="chassis"/>
       <origin xyz="0 0 0.001" rpy="0 0 0"/>
+    </joint>
+
+    <!--
+      IMU mount (interpreted from the user's measurement):
+      x = +0.0045 m  : robot front direction
+      y = +0.0025 m  : robot left direction
+      z = +0.1350 m  : robot up direction
+
+      IMU axis mounting:
+      imu x -> robot right
+      imu y -> robot front
+      imu z -> robot up
+
+      This is a yaw rotation of -90 deg about Z from base_link to imu_link.
+    -->
+    <joint name="imu_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="imu_link"/>
+      <origin xyz="0.0045 0.0025 0.135" rpy="0 0 -1.57079632679"/>
     </joint>
 
     <joint name="wheel_left_joint" type="continuous">
