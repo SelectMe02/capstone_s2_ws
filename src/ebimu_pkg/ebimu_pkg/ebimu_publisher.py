@@ -3,7 +3,7 @@ import math
 import re
 import threading
 import time
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import rclpy
 from rclpy.node import Node
@@ -49,6 +49,22 @@ def unavailable_covariance() -> List[float]:
     ]
 
 
+def parse_index_parameter(value: Any) -> List[int]:
+    """Accept either [0,1,2] or '0,1,2' so launch files stay easy to edit."""
+    if isinstance(value, (list, tuple)):
+        return [int(x) for x in value]
+
+    if isinstance(value, str):
+        text = value.strip()
+        if text.startswith('[') and text.endswith(']'):
+            text = text[1:-1]
+        if not text:
+            return []
+        return [int(part.strip()) for part in text.split(',') if part.strip() != '']
+
+    return [int(value)]
+
+
 class EbimuPublisher(Node):
     def __init__(self) -> None:
         super().__init__('ebimu_publisher')
@@ -63,18 +79,18 @@ class EbimuPublisher(Node):
 
         self.declare_parameter('frame_id', 'imu_link')
         self.declare_parameter('use_degrees', True)
-        self.declare_parameter('invert_yaw', False)
+        self.declare_parameter('invert_yaw', True)
+        self.declare_parameter('invert_gyro_z_with_yaw', True)
 
         # 기본값은 quick-start 문서의 *roll,pitch,yaw
-        self.declare_parameter('rpy_field_indices', [0, 1, 2])
+        self.declare_parameter('rpy_field_indices', '0,1,2')
 
-        # 현재 1차 적용에서는 yaw orientation만 EKF에 사용
-        # raw gyro / accel 형식을 정확히 알고 있으면 인덱스를 바꿔 확장 가능
-        self.declare_parameter('gyro_field_indices', [-1, -1, -1])
-        self.declare_parameter('accel_field_indices', [-1, -1, -1])
+        # raw gyro / accel 형식을 정확히 알면 인덱스를 지정해서 전부 퍼블리시 가능
+        self.declare_parameter('gyro_field_indices', '4, 5, 6')
+        self.declare_parameter('accel_field_indices', '7, 8, 9')
 
-        self.declare_parameter('gyro_in_deg_s', False)
-        self.declare_parameter('accel_in_g', False)
+        self.declare_parameter('gyro_in_deg_s', True)
+        self.declare_parameter('accel_in_g', True)
 
         self.declare_parameter('orientation_cov_roll_pitch', 0.03)
         self.declare_parameter('orientation_cov_yaw', 0.15)
@@ -88,10 +104,11 @@ class EbimuPublisher(Node):
         self.frame_id = str(self.get_parameter('frame_id').value)
         self.use_degrees = bool(self.get_parameter('use_degrees').value)
         self.invert_yaw = bool(self.get_parameter('invert_yaw').value)
+        self.invert_gyro_z_with_yaw = bool(self.get_parameter('invert_gyro_z_with_yaw').value)
 
-        self.rpy_field_indices = [int(x) for x in self.get_parameter('rpy_field_indices').value]
-        self.gyro_field_indices = [int(x) for x in self.get_parameter('gyro_field_indices').value]
-        self.accel_field_indices = [int(x) for x in self.get_parameter('accel_field_indices').value]
+        self.rpy_field_indices = parse_index_parameter(self.get_parameter('rpy_field_indices').value)
+        self.gyro_field_indices = parse_index_parameter(self.get_parameter('gyro_field_indices').value)
+        self.accel_field_indices = parse_index_parameter(self.get_parameter('accel_field_indices').value)
 
         self.gyro_in_deg_s = bool(self.get_parameter('gyro_in_deg_s').value)
         self.accel_in_g = bool(self.get_parameter('accel_in_g').value)
@@ -217,7 +234,6 @@ class EbimuPublisher(Node):
         msg.orientation.y = qy
         msg.orientation.z = qz
         msg.orientation.w = qw
-
         msg.orientation_covariance = [
             float(self.orientation_cov_roll_pitch), 0.0, 0.0,
             0.0, float(self.orientation_cov_roll_pitch), 0.0,
@@ -233,6 +249,10 @@ class EbimuPublisher(Node):
                 gx = math.radians(gx)
                 gy = math.radians(gy)
                 gz = math.radians(gz)
+
+            # yaw 방향을 뒤집었다면 z축 각속도도 같이 뒤집어야 orientation과 일관성이 맞음
+            if self.invert_yaw and self.invert_gyro_z_with_yaw:
+                gz = -gz
 
             msg.angular_velocity.x = gx
             msg.angular_velocity.y = gy

@@ -187,13 +187,13 @@ def generate_launch_description():
     
 
     # tf2_ros의 StaticTransformBroadcasterNode 실행 ->map to odom
-    static_tf_broadcaster = Node(
-    package='tf2_ros',
-    executable='static_transform_publisher',
-    name='static_tf_broadcaster',
-    output='screen',
-    arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom'] 
-    )
+    # static_tf_broadcaster = Node(
+    # package='tf2_ros',
+    # executable='static_transform_publisher',
+    # name='static_tf_broadcaster',
+    # output='screen',
+    # arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom'] 
+    # )
 
     # Add rviz node
     # pkg_path = os.path.join(get_package_share_directory('amr_navigator'))
@@ -208,7 +208,7 @@ def generate_launch_description():
 
     # Create the launch description and populate
     ld = LaunchDescription()
-    ld.add_action(static_tf_broadcaster)
+    # ld.add_action(static_tf_broadcaster)
     # ld.add_action(node_rviz)
 
     # Set environment variables
