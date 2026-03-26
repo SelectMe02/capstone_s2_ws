@@ -79,7 +79,7 @@ class EbimuPublisher(Node):
 
         self.declare_parameter('frame_id', 'imu_link')
         self.declare_parameter('use_degrees', True)
-        self.declare_parameter('invert_yaw', True)
+        self.declare_parameter('invert_yaw', False)
         self.declare_parameter('invert_gyro_z_with_yaw', True)
 
         # 기본값은 quick-start 문서의 *roll,pitch,yaw
