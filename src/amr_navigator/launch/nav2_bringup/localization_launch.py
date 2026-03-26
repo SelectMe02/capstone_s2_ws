@@ -191,7 +191,8 @@ def generate_launch_description():
     # executable='static_transform_publisher',
     # name='static_tf_broadcaster',
     # output='screen',
-    # arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom']
+
+    # arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom'] 
     # )
 
     # Add rviz node
@@ -207,7 +208,7 @@ def generate_launch_description():
 
     # Create the launch description and populate
     ld = LaunchDescription()
-    #ld.add_action(static_tf_broadcaster)
+    # ld.add_action(static_tf_broadcaster)
     # ld.add_action(node_rviz)
 
     # Set environment variables

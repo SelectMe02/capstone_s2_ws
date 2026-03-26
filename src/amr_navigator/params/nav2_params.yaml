@@ -113,7 +113,7 @@ controller_server:
     use_sim_time: False
     controller_frequency: 20.0
     min_x_velocity_threshold: 0.001
-    min_y_velocity_threshold: 0.5
+    min_y_velocity_threshold: 0.0
     min_theta_velocity_threshold: 0.001
     progress_checker_plugin: "progress_checker"
     goal_checker_plugin: "goal_checker"
@@ -122,13 +122,13 @@ controller_server:
     # Progress checker parameters
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.5
+      required_movement_radius: 0.15
       movement_time_allowance: 10.0
     # Goal checker parameters
     goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.2
-      yaw_goal_tolerance: 0.05
+      xy_goal_tolerance: 0.16
+      yaw_goal_tolerance: 0.10
       stateful: True
     # DWB parameters
     FollowPath:
@@ -141,7 +141,7 @@ controller_server:
       
       max_vel_y: 0.0
       # max_vel_theta: 1.0
-      max_vel_theta: 0.5
+      max_vel_theta: 0.35
       min_speed_xy: 0.0
       # max_speed_xy: 0.26
       max_speed_xy: 0.4
@@ -152,12 +152,12 @@ controller_server:
       acc_lim_x: 0.5
       acc_lim_y: 0.0
       # acc_lim_theta: 3.2
-      acc_lim_theta: 0.5
+      acc_lim_theta: 0.8
       # decel_lim_x: -2.5
       decel_lim_x: -0.5
       decel_lim_y: 0.0
       # decel_lim_theta: -3.2
-      decel_lim_theta: -0.5
+      decel_lim_theta: -0.8
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 20
@@ -166,19 +166,19 @@ controller_server:
       angular_granularity: 0.025
       transform_tolerance: 0.2
       xy_goal_tolerance: 0.25
-      trans_stopped_velocity: 0.25
+      trans_stopped_velocity: 0.03
       short_circuit_trajectory_evaluation: True
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       BaseObstacle.scale: 0.02
-      PathAlign.scale: 32.0
+      PathAlign.scale: 12.0
       PathAlign.forward_point_distance: 0.1
-      GoalAlign.scale: 24.0
+      GoalAlign.scale: 8.0
       GoalAlign.forward_point_distance: 0.1
-      PathDist.scale: 32.0
-      GoalDist.scale: 24.0
-      RotateToGoal.scale: 32.0
-      RotateToGoal.slowing_factor: 5.0
+      PathDist.scale: 24.0
+      GoalDist.scale: 18.0
+      RotateToGoal.scale: 10.0
+      RotateToGoal.slowing_factor: 8.0
       RotateToGoal.lookahead_time: -1.0
 
 controller_server_rclcpp_node:
