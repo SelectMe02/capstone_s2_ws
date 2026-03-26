@@ -184,7 +184,6 @@ def generate_launch_description():
                              'node_names': ['amcl']}]),
         ],
     )
-    
 
     # tf2_ros의 StaticTransformBroadcasterNode 실행 ->map to odom
     # static_tf_broadcaster = Node(
@@ -192,6 +191,7 @@ def generate_launch_description():
     # executable='static_transform_publisher',
     # name='static_tf_broadcaster',
     # output='screen',
+
     # arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom'] 
     # )
 
@@ -204,7 +204,7 @@ def generate_launch_description():
     #     output='screen',
     #     arguments=['-d', os.path.join(pkg_path, 'rviz', 'AMCL.rviz')]
     # )
-    
+
 
     # Create the launch description and populate
     ld = LaunchDescription()
