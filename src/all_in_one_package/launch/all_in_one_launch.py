@@ -23,7 +23,7 @@ def generate_launch_description():
         'nav2_bringup',
         'navigation_launch.py',
     )
-    map_yaml = os.path.join(get_package_share_directory('amr_navigator'), 'map', 'final_demo.yaml')
+    map_yaml = os.path.join(get_package_share_directory('amr_navigator'), 'map', 'ekf_map.yaml')
 
     return LaunchDescription([
         IncludeLaunchDescription(PythonLaunchDescriptionSource(serial_launch)),
