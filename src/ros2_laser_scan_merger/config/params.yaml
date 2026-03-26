@@ -10,26 +10,26 @@
     laser1B: 0
     laser1G: 0
     laser1R: 255
-    laser1XOff:  -0.345   # URDF: lidar1_link x=0.345
+    laser1XOff:  0.26   # URDF: lidar1_link x=0.345
     laser1YOff:  0.0     # URDF: lidar1_link y=0.0
-    laser1ZOff:  0.04    # URDF: lidar1_link z=0.04
+    laser1ZOff:  0.225    # URDF: lidar1_link z=0.04
     laser2Alpha: 180.0
     laser2AngleMax: 181.0
     laser2AngleMin: -181.0
     laser2B: 255
     laser2G: 0
     laser2R: 0
-    laser2XOff: 0.345   # URDF: lidar2_link x=-0.345
+    laser2XOff: -0.26   # URDF: lidar2_link x=-0.345
     laser2YOff:  0.0     # URDF: lidar2_link y=0.0
-    laser2ZOff:  0.04    # URDF: lidar2_link z=0.04
+    laser2ZOff:  0.225    # URDF: lidar2_link z=0.04
     pointCloudTopic: cloud_in
     pointCloutFrameId: laser
     qos_overrides./parameter_events.publisher.depth: 1000
     # qos_overrides./parameter_events.publisher.durability: volatile
     # qos_overrides./parameter_events.publisher.history: keep_last
     qos_overrides./parameter_events.publisher.reliability: best_effort
-    scanTopic1: /rplidar2/scan
-    scanTopic2: /rplidar1/scan
+    scanTopic1: /rplidar1/scan
+    scanTopic2: /rplidar2/scan
     show1: true
     show2: true
     use_sim_time: false
@@ -55,7 +55,7 @@
     range_max: 10.0
     range_min: 0.35
     scan_time: 0.3333
-    target_frame: laser
+    target_frame: base_link
     transform_tolerance: 0.01
     use_inf: true
     use_sim_time: false
