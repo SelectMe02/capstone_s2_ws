@@ -23,7 +23,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('imu_port', default_value='/dev/ttyUSB_IMU'),
         DeclareLaunchArgument('imu_baud', default_value='115200'),
-        DeclareLaunchArgument('invert_yaw', default_value='true'),
+        DeclareLaunchArgument('invert_yaw', default_value='false'),
 
         # 반드시 네 EBIMU raw 한 줄 형식에 맞게 바꿔야 함.
         # 예) *roll,pitch,yaw,gx,gy,gz,ax,ay,az  -> gyro: 3,4,5 / accel: 6,7,8
@@ -46,7 +46,7 @@ def generate_launch_description():
 
                 # EKF용 IMU frame/topic
                 'imu_topic_name': '/imu/data',
-                'frame_id': 'imu_link',
+                'frame_id': 'base_link',
 
                 # IMU의 실제 장착 방향은 URDF의 imu_joint로 보정
                 'use_degrees': True,
