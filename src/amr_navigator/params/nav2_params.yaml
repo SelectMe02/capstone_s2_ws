@@ -225,12 +225,16 @@ local_costmap:
         scan_front:
           topic: /rplidar1/scan
           max_obstacle_height: 2.0
+          obstacle_max_range: 3.0
+          raytrace_max_range: 3.5
           clearing: True
           marking: True
           data_type: "LaserScan"
         scan_rear:
           topic: /rplidar2/scan
           max_obstacle_height: 2.0
+          obstacle_max_range: 3.0
+          raytrace_max_range: 3.5
           clearing: True
           marking: True
           data_type: "LaserScan"  
@@ -270,12 +274,16 @@ global_costmap:
         scan_front:
           topic: /rplidar1/scan
           max_obstacle_height: 2.0
+          obstacle_max_range: 3.0
+          raytrace_max_range: 3.5
           clearing: True
           marking: True
           data_type: "LaserScan"
         scan_rear:
           topic: /rplidar2/scan
           max_obstacle_height: 2.0
+          obstacle_max_range: 3.0
+          raytrace_max_range: 3.5
           clearing: True
           marking: True
           data_type: "LaserScan"  
