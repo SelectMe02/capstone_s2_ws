@@ -10,7 +10,7 @@ def generate_launch_description():
     serial_launch = os.path.join(get_package_share_directory('serial_test'), 'serial_test.launch.py')
     imu_ekf_launch = os.path.join(get_package_share_directory('ebimu_pkg'), 'launch', 'ebimu_ekf.launch.py')
     lidar_launch = os.path.join(get_package_share_directory('sllidar_ros2'), 'launch', 'sllidar_c1_2_launch.py')
-    merger_launch = os.path.join(get_package_share_directory('ros2_laser_scan_merger'), 'launch', 'merge_2_scan.launch.py')
+    # merger_launch = os.path.join(get_package_share_directory('ros2_laser_scan_merger'), 'launch', 'merge_2_scan.launch.py')
     localization_launch = os.path.join(
         get_package_share_directory('amr_navigator'),
         'launch',
@@ -23,7 +23,7 @@ def generate_launch_description():
         'nav2_bringup',
         'navigation_launch.py',
     )
-    map_yaml = os.path.join(get_package_share_directory('amr_navigator'), 'map', 'ekf_map.yaml')
+    map_yaml = os.path.join(get_package_share_directory('amr_navigator'), 'map', 'non_merger_2f.yaml')
 
     return LaunchDescription([
         IncludeLaunchDescription(PythonLaunchDescriptionSource(serial_launch)),
@@ -38,10 +38,10 @@ def generate_launch_description():
             actions=[IncludeLaunchDescription(PythonLaunchDescriptionSource(lidar_launch))],
         ),
 
-        TimerAction(
-            period=4.0,
-            actions=[IncludeLaunchDescription(PythonLaunchDescriptionSource(merger_launch))],
-        ),
+        # TimerAction(
+        #     period=4.0,
+        #     actions=[IncludeLaunchDescription(PythonLaunchDescriptionSource(merger_launch))],
+        # ),
 
         TimerAction(
             period=6.0,
