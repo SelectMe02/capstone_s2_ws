@@ -53,7 +53,14 @@ def generate_launch_description():
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=['-configuration_directory', cartographer_config_dir,
-                       '-configuration_basename', configuration_basename]),
+                       '-configuration_basename', configuration_basename],
+            remappings=[
+                ('scan_1', '/rplidar1/scan'),
+                ('scan_2', '/rplidar2/scan'),
+                ('odom', '/wheel/odometry'),
+                ],           
+            ),
+            
         DeclareLaunchArgument(
             'resolution',
             default_value=resolution,

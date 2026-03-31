@@ -78,6 +78,7 @@ def generate_launch_description():
                          'angle_compensate': angle_compensate1, 
                          'scan_mode': scan_mode1,
                               }],
+            # remappings=[('scan', '/scan')],                  
             output='screen'),
 
         Node(

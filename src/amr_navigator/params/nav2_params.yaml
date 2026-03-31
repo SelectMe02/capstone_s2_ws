@@ -38,7 +38,7 @@ amcl:
     z_rand: 0.5
     z_short: 0.05
     # scan_topic: scan
-    scan_topic: /scan
+    scan_topic: /rplidar1/scan
     map_topic: /map
 
 amcl_map_client:
@@ -221,13 +221,19 @@ local_costmap:
         z_voxels: 16
         max_obstacle_height: 2.0
         mark_threshold: 0
-        observation_sources: scan
-        scan:
-          topic: /scan
+        observation_sources: scan_front scan_rear
+        scan_front:
+          topic: /rplidar1/scan
           max_obstacle_height: 2.0
           clearing: True
           marking: True
           data_type: "LaserScan"
+        scan_rear:
+          topic: /rplidar2/scan
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"  
       static_layer:
         map_subscribe_transient_local: True
       always_send_full_costmap: True
@@ -261,12 +267,18 @@ global_costmap:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
         observation_sources: scan
-        scan:
-          topic: /scan
+        scan_front:
+          topic: /rplidar1/scan
           max_obstacle_height: 2.0
           clearing: True
           marking: True
           data_type: "LaserScan"
+        scan_rear:
+          topic: /rplidar2/scan
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"  
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
