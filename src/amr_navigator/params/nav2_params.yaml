@@ -161,7 +161,7 @@ controller_server:
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 20
-      sim_time: 1.7
+      sim_time: 2.2
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.2
@@ -171,7 +171,7 @@ controller_server:
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       # ObstacleFootprint.scale: 0.8
-      BaseObstacle.scale: 0.08
+      BaseObstacle.scale: 0.25
       PathAlign.scale: 8.0
       PathAlign.forward_point_distance: 0.1
       GoalAlign.scale: 6.0
@@ -196,12 +196,12 @@ local_costmap:
       use_sim_time: False
       rolling_window: true
       map_topic: /map
-      width: 3
-      height: 3
+      width: 4.5
+      height: 4.5
       resolution: 0.05
       # robot_radius: 0.22
       # robot_radius: 0.4
-      footprint: "[[0.31, 0.24], [0.31, -0.24], [-0.31, 0.24]]"
+      footprint: "[[0.31, 0.24], [0.31, -0.24], [-0.31, -0.24], [-0.31, 0.24]]"
       footprint_padding: 0.01
 
 
@@ -215,7 +215,7 @@ local_costmap:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 2.5
         # inflation_radius: 0.55
-        inflation_radius: 0.30
+        inflation_radius: 0.40
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -225,32 +225,32 @@ local_costmap:
         z_voxels: 16
         max_obstacle_height: 2.0
         mark_threshold: 0
-        footprint_clearing_enable: True
+        footprint_clearing_enabled: True
         observation_sources: scan_front scan_rear
         scan_front:
-          topic: /rplidar1/scan
+          topic: /rplidar1/scan_filtered
           max_obstacle_height: 2.0
           obstacle_max_range: 3.0
-          obstacle_min_range: 0.12
-          raytrace_max_range: 3.5
-          raytrace_min_range: 0.12
+          obstacle_min_range: 0.18
+          raytrace_max_range: 3.2
+          raytrace_min_range: 0.18
           clearing: True
           marking: True
-          inf_is_valid: True
+          inf_is_valid: False
           observation_persistence: 0.0
           expected_update_rate: 0.12
           data_type: "LaserScan"
         scan_rear:
-          topic: /rplidar2/scan
+          topic: /rplidar2/scan_filtered
           max_obstacle_height: 2.0
           obstacle_max_range: 3.0
-          obstacle_min_range: 0.12
-          raytrace_max_range: 3.5
-          raytrace_min_range: 0.12
+          obstacle_min_range: 0.18
+          raytrace_max_range: 3.2
+          raytrace_min_range: 0.18
           clearing: True
           marking: True
-          inf_is_valid: True
-          observation_persistence: 0.0
+          inf_is_valid: False
+          observation_persistence: 0.8
           expected_update_rate: 0.12
           data_type: "LaserScan"  
       static_layer:
@@ -272,7 +272,7 @@ global_costmap:
       robot_base_frame: base_link
       use_sim_time: False
       # robot_radius: 0.4
-      footprint: "[[0.31, 0.24], [0.31, -0.24], [-0.31, 0.24]]"
+      footprint: "[[0.31, 0.24], [0.31, -0.24], [-0.31, -0.24], [-0.31, 0.24]]"
       footprint_padding: 0.01
       resolution: 0.05
       track_unknown_space: true
