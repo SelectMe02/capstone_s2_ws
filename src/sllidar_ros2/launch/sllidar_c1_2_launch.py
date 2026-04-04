@@ -96,7 +96,7 @@ def generate_launch_description():
                     }
                 }
             }],
-            remappings=[('rplidar1/scan', '/scan')],
+            # remappings=[('rplidar1/scan', '/scan')],
             output='screen'
         ),
 
@@ -164,7 +164,7 @@ def generate_launch_description():
                     }
                 }
             }],
-            remappings=[('rplidar2/scan', '/scan')],
+            # remappings=[('rplidar2/scan', '/scan')],
             output='screen'
         ),
 
